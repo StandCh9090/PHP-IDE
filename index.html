@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP-IDE</title>
+    <link rel="stylesheet" href="frontend/css/style.css">
+    <!-- Monaco Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+</head>
+<body>
+    <div id="app" class="app">
+        <!-- サイドバー -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h1>PHP-IDE</h1>
+                <button id="toggleSidebar" class="toggle-btn" title="サイドバーを閉じる">☰</button>
+            </div>
+            
+            <!-- ファイルツリー -->
+            <div class="file-explorer">
+                <div class="explorer-header">
+                    <h2>ファイルエクスプローラー</h2>
+                    <div class="explorer-actions">
+                        <button id="newFileBtn" class="icon-btn" title="新規ファイル">+</button>
+                        <button id="newFolderBtn" class="icon-btn" title="新規フォルダ">📁</button>
+                    </div>
+                </div>
+                <div id="fileTree" class="file-tree"></div>
+            </div>
+        </aside>
+
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+            <!-- タブバー -->
+            <div class="tab-bar" id="tabBar"></div>
+
+            <!-- エディター容器 -->
+            <div class="editor-container">
+                <div id="editor" class="editor"></div>
+            </div>
+        </main>
+
+        <!-- 右サイドバー（ターミナル・その他） -->
+        <aside id="rightSidebar" class="right-sidebar">
+            <div class="panels-header">
+                <button class="panel-tab active" data-panel="terminal">ターミナル</button>
+                <button class="panel-tab" data-panel="output">出力</button>
+                <button class="panel-tab" data-panel="problems">問題</button>
+            </div>
+            <div class="panels-content">
+                <div id="terminalPanel" class="panel active">
+                    <div id="terminal" class="terminal"></div>
+                    <input id="terminalInput" class="terminal-input" type="text" placeholder="コマンドを入力...">
+                </div>
+                <div id="outputPanel" class="panel">
+                    <div id="output" class="output"></div>
+                </div>
+                <div id="problemsPanel" class="panel">
+                    <div id="problems" class="problems"></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- トップメニュー -->
+    <nav class="top-menu">
+        <div class="menu-group">
+            <button id="fileMenu" class="menu-item">ファイル</button>
+            <button id="editMenu" class="menu-item">編集</button>
+            <button id="viewMenu" class="menu-item">表示</button>
+            <button id="toolsMenu" class="menu-item">ツール</button>
+        </div>
+        <div class="menu-group">
+            <button id="themeToggle" class="menu-item">🌙 テーマ</button>
+            <button id="settingsBtn" class="menu-item">⚙️ 設定</button>
+        </div>
+    </nav>
+
+    <!-- スクリプト -->
+    <script src="frontend/js/config.js"></script>
+    <script src="frontend/js/api.js"></script>
+    <script src="frontend/js/editor.js"></script>
+    <script src="frontend/js/fileTree.js"></script>
+    <script src="frontend/js/tabs.js"></script>
+    <script src="frontend/js/terminal.js"></script>
+    <script src="frontend/js/theme.js"></script>
+    <script src="frontend/js/ui.js"></script>
+    <script src="frontend/js/main.js"></script>
+</body>
+</html>
