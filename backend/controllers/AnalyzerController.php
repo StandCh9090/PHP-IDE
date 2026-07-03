@@ -1,6 +1,6 @@
 <?php
 /**
- * コード解析コントローラー
+ * コード解析コントローラー（拡統版）
  */
 class AnalyzerController {
     /**
@@ -71,9 +71,9 @@ class AnalyzerController {
         
         // php -l でチェック
         $tmpFile = tempnam(sys_get_temp_dir(), 'php_');
-        file_put_contents($tmpFile, $code);
+        file_put_contents($tmpFile, '<?php ' . $code);
         
-        exec('php -l ' . escapeshellarg($tmpFile), $output, $returnCode);
+        exec('php -l ' . escapeshellarg($tmpFile) . ' 2>&1', $output, $returnCode);
         
         if ($returnCode !== 0) {
             foreach ($output as $line) {
@@ -96,19 +96,19 @@ class AnalyzerController {
      */
     private function lintPHP($code) {
         $issues = [];
-        
-        // 簡単な静的解析
         $lines = explode("\n", $code);
         
         foreach ($lines as $lineNum => $line) {
-            $line = trim($line);
+            $trimmed = trim($line);
+            if (empty($trimmed)) continue;
+            
             $lineNum = $lineNum + 1;
             
             // var_dump の使用
             if (preg_match('/var_dump\s*\(/', $line)) {
                 $issues[] = [
                     'line' => $lineNum,
-                    'message' => 'var_dump usage detected',
+                    'message' => 'var_dumpは開発時のみ使用',
                     'severity' => 'warning'
                 ];
             }
@@ -117,18 +117,28 @@ class AnalyzerController {
             if (preg_match('/print_r\s*\(/', $line)) {
                 $issues[] = [
                     'line' => $lineNum,
-                    'message' => 'print_r usage detected',
+                    'message' => 'print_rが検出',
                     'severity' => 'info'
                 ];
             }
             
-            // グローバル変数の使用
+            // グローバル変数
             if (preg_match('/\$GLOBALS/', $line)) {
                 $issues[] = [
                     'line' => $lineNum,
-                    'message' => 'GLOBALS usage detected',
+                    'message' => 'グローバル変数の使用を会避',
                     'severity' => 'warning'
                 ];
+            }
+            
+            // セミコロンを確認
+            if ($trimmed && !preg_match('/[;{}]$/', $trimmed) && !preg_match('/\*\//', $trimmed)) {
+                // 次行があり、次行が空でない場合
+                if (isset($lines[$lineNum]) && !empty(trim($lines[$lineNum]))) {
+                    if (!preg_match('/\(|{|\[|,|=>|\?/', $trimmed)) {
+                        // それ以上複雑なチェックは省略
+                    }
+                }
             }
         }
         
@@ -139,11 +149,7 @@ class AnalyzerController {
      * PHP コードをフォーマット
      */
     private function formatPHP($code) {
-        // 基本的なフォーマッティング
-        $formatted = $code;
-        
-        // インデントを正規化
-        $lines = explode("\n", $formatted);
+        $lines = explode("\n", $code);
         $indent = 0;
         $result = [];
         

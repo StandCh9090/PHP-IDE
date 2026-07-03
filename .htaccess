@@ -1,0 +1,17 @@
+<?php
+/**
+ * .htaccess - Apache設定
+ */
+?>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # /api/... を /backend/index.php にルーティング
+    RewriteRule ^api/(.*)$ backend/index.php [L,QSA]
+    
+    # ファイルが存在しない場合は index.html を返す
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.html [L]
+</IfModule>
